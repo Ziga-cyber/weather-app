@@ -1,0 +1,42 @@
+<div class="row w-100">
+    <div class="col d-flex align-items-center justify-content-center text-box">
+        <div class="card-body text-center">
+            <h4 class="date-temperatures-font-size">{{time}}</h4>
+        </div>
+    </div>
+
+    <div class="col d-flex align-items-center justify-content-center text-box">
+        <div class="card-body text-center">
+            <h4 class="date-temperatures-font-size">{{hourForecast.temperature2m}} °C</h4>
+        </div>
+    </div>
+
+    <div class="col d-flex align-items-center justify-content-center text-box">
+        <div class="card-body text-center">
+            <img class="card-img-top image-size" [src]="hourForecast.weatherIcon['image']" alt="Weather icon">
+            <h6 class="card-subtitle icon-precipitation-wind-font-size text-muted">
+                {{hourForecast.weatherIcon["description"]}}</h6>
+        </div>
+    </div>
+
+    <div class="col d-flex align-items-center justify-content-center text-box">
+        <div class="card-body text-center">
+            <h6 class="icon-precipitation-wind-font-size ">Precipitation Probability:
+                {{hourForecast.precipitationProbability}} %</h6>
+        </div>
+    </div>
+
+    <div class="col d-flex align-items-center justify-content-center text-box">
+        <div class="card-body text-center">
+            <h6 class="icon-precipitation-wind-font-size">Wind speed: {{hourForecast.windSpeed10m}} m/s</h6>
+
+        </div>
+    </div>
+
+    <div class="col d-flex align-items-center justify-content-center text-box">
+        <div class="card-body text-center">
+            <h6 class="icon-precipitation-wind-font-size">Wind direction:
+                {{getWindDirectionText(hourForecast.windDirection10m)}}</h6>
+        </div>
+    </div>
+</div>

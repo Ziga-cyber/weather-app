@@ -1,0 +1,52 @@
+<div class="container card-wrapper">
+    <div class="row">
+        <div class="col-md-12 col-lg-8">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="card">
+                        <div class="row">
+                            <div class="col">
+                                <img class="card-img-top max-image-size"
+                                    src={{weather.currentWeather.weatherIcon.image}} alt="Weather icon">
+                            </div>
+
+                            <div class="col">
+                                <div class="col d-flex align-items-center justify-content-center text-box">
+                                    <div class="card-body text-center">
+                                        <h2 class="card-title">{{weather.currentWeather.temperature2m}} °C</h2>
+                                        <h4 class="card-subtitle mb-2 text-muted">
+                                            {{weather.currentWeather.weatherIcon.description}}
+                                        </h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="col d-flex align-items-center justify-content-center text-box">
+                                    <div class="card-body text-center">
+                                        <h2 class="card-title">{{place}}</h2>
+                                        <h4 class="card-subtitle mb-2 text-muted">{{weather.dateString}}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12">
+                    <app-temeprature-chart [graphData]="weather.temperatureData"></app-temeprature-chart>
+                </div>
+
+                <div class="col-xs-12">
+                    <h4 class="sub-title">Weather in the next hours</h4>
+                    <ul class="list-group scrollable-list">
+                        <li class="list-group-item d-flex" *ngFor="let item of weather.hourForecast">
+                            <app-hours-forecast-card [hourForecast]="item"></app-hours-forecast-card>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,4 @@
+<app-navbar></app-navbar>
+<div *ngIf="weather">
+  <app-current-weather-card [weather]="weather" [place]="place"></app-current-weather-card>
+</div>
