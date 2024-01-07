@@ -1,0 +1,31 @@
+<div class="row w-100">
+    <div class="col d-flex align-items-center justify-content-center text-box">
+        <div class="card-body text-center">
+            <h4 class="date-temperatures-font-size">
+                {{date}}
+            </h4>
+        </div>
+    </div>
+
+    <div class="col d-flex align-items-center justify-content-center text-box">
+        <div class="card-body text-center">
+            <h4 class="date-temperatures-font-size">Minimum temperature: {{dayForecast.temperature2d}} °C</h4>
+        </div>
+    </div>
+
+
+    <div class="col d-flex align-items-center justify-content-center text-box">
+        <div class="card-body text-center">
+            <h4 class="date-temperatures-font-size">Maximum temperature: {{dayForecast.temperature2m}} °C</h4>
+        </div>
+    </div>
+
+
+    <div class="col d-flex align-items-center justify-content-center text-box">
+        <div class="card-body text-center">
+            <img class="card-img-top image-size" [src]="dayForecast.weatherIcon['image']" alt="Weather icon">
+            <h6 class="card-subtitle icon-precipitation-wind-font-size text-muted">
+                {{dayForecast.weatherIcon["description"]}}</h6>
+        </div>
+    </div>
+</div>

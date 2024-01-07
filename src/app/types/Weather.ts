@@ -1,14 +1,11 @@
 export interface Weather {
     currentWeather: CurrentWeather,
-    hourForecast: HourForecast[], //TODO change once you implement it!
-    daily: any //TODO Change once you implement it!
-    day: string,
+    hourForecast: HourForecast[],
+    dayForecast: DayForecast[],
     dateString: string,
-
     temperatureData: GraphData,
     precipationChanceData: GraphData
     windSpeedData: GraphData
-
 }
 
 export interface GraphData {
@@ -49,9 +46,18 @@ export interface HourForecast {
     time: Date,
     temperature2m: number,
     precipitationProbability: number,
-    precipitation: number,
     weatherCode: string,
     windSpeed10m: number,
     windDirection10m: number,
-    weatherIcon: Images
+    weatherIcon: Images,
+    id: number
+}
+
+export interface DayForecast {
+    time: Date
+    temperature2m: number,
+    precipitationProbability: number,
+    weatherCode: string,
+    temperature2d: number,
+    weatherIcon: Images,
 }

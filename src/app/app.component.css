@@ -1,0 +1,37 @@
+.sub-title {
+    margin-top: 2vh;
+    margin-bottom: 1vh;
+}
+
+.card-wrapper {
+    margin-top: 3vh
+}
+
+.scrollable-list {
+    max-height: 40vh;
+    overflow-y: auto;
+    border-bottom: 1px solid #dee2e6;
+    border-top: 1px solid #dee2e6;
+}
+
+@media (max-width: 767px) {
+    .scrollable-list {
+        max-height: 28vh;
+        overflow-y: auto;
+        border-bottom: 1px solid #dee2e6;
+        border-top: 1px solid #dee2e6;
+    }
+}
+
+.small-footer {
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+}
+
+.button-group {
+    padding-top: 1vh;
+    padding-left: 2vh;
+    padding-right: 2vh;
+    margin-bottom: 3vh;
+
+}

@@ -1,0 +1,35 @@
+<div class="row">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="row">
+                <div class="col">
+                    <div class="col d-flex align-items-center justify-content-center text-box">
+                        <img class="card-img-top max-image-size" src={{weather.currentWeather.weatherIcon.image}}
+                            alt="Weather icon">
+                    </div>
+                </div>
+
+
+                <div class="col">
+                    <div class="col d-flex align-items-center justify-content-center text-box">
+                        <div class="card-body text-center">
+                            <h2 class="card-title">{{weather.currentWeather.temperature2m}} °C</h2>
+                            <h4 class="card-subtitle mb-2 text-muted">
+                                {{weather.currentWeather.weatherIcon.description}}
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="col d-flex align-items-center justify-content-center text-box">
+                        <div class="card-body text-center">
+                            <h2 class="card-title">{{place}}</h2>
+                            <h4 class="card-subtitle mb-2 text-muted">{{weather.dateString}}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

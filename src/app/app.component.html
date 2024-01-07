@@ -1,4 +1,48 @@
 <app-navbar></app-navbar>
 <div *ngIf="weather">
-  <app-current-weather-card [weather]="weather" [place]="place"></app-current-weather-card>
+  <div class="container card-wrapper">
+    <div class="row">
+      <div class="col-xs-12">
+        <app-current-weather-card [weather]="weather" [place]="place"></app-current-weather-card>
+      </div>
+
+      <div class="col-md-12 col-lg-8">
+        <div class="col-xs-12">
+          <h4 class="sub-title">Weather in the next hours</h4>
+          <ul class="list-group scrollable-list">
+            <li class="list-group-item d-flex" *ngFor="let item of weather.hourForecast">
+              <app-hours-forecast-card [id]="item.id" [hourForecast]="item"></app-hours-forecast-card>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-xs-12" style="margin-top: 1vh" *ngIf="graphsData">
+          <app-chart [color]="graphColor" [graphTitle]="graphTitle" [graphData]="graphsData"></app-chart>
+          <div class="btn-group w-100" role="group" style="margin-top: 1vh;">
+            <button type="button" (click)="setTemperatureGraph()" class="btn btn-outline-primary">Temperature</button>
+            <button type="button" (click)="setWindGraph()" class="btn btn-outline-danger">Wind</button>
+            <button type="button" (click)="setPrecepationGraph()" class="btn btn-outline-success">Precepation</button>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="col-md-12 col-lg-4">
+        <h4 class="sub-title">Weather in the upcoming days</h4>
+        <ul class="list-group">
+          <li class="list-group-item d-flex" *ngFor="let item of weather.dayForecast; let i = index">
+            <app-day-forecast-card class="w-100" [dayForecast]="item"></app-day-forecast-card>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="container small-footer">
+    <div class="row">
+      <div class="col d-flex justify-content-center">
+        <!-- <p>Author: Žiga Pigac</p> -->
+      </div>
+    </div>
+  </div>
 </div>

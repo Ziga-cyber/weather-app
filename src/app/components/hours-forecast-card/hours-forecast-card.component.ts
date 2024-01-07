@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { HourForecast } from '../types/Weather';
+import { HourForecast } from '../../types/Weather';
 import moment from 'moment';
 
 @Component({
@@ -12,11 +12,9 @@ import moment from 'moment';
 export class HoursForecastCardComponent implements OnInit {
   @Input() hourForecast!: HourForecast;
 
-  date: string;
   time: string
 
   constructor() {
-    this.date = "";
     this.time = "";
   }
 
