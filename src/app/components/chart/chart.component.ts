@@ -28,7 +28,7 @@ export class ChartComponent implements OnChanges {
     }
   }
 
-  private createChart() {
+  private createChart(): void {
     this.chart = new Chart('chart', {
       type: 'line',
       data: {
@@ -50,10 +50,10 @@ export class ChartComponent implements OnChanges {
     });
   }
 
-  private updateChartData() {
+  private updateChartData(): void {
     if (this.chart) {
-      this.chart.data.labels = this.graphData.labels.slice(0, 24);
-      this.chart.data.datasets[0].data = this.graphData.values.slice(0, 24);
+      this.chart.data.labels = this.graphData.labels;
+      this.chart.data.datasets[0].data = this.graphData.values;
       this.chart.data.datasets[0].label = this.graphTitle;
       this.chart.data.datasets[0].borderColor = this.color;
       this.chart.update();

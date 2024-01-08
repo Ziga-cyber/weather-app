@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { DayForecast } from '../../types/Weather';
 import moment from 'moment';
 
@@ -9,17 +9,14 @@ import moment from 'moment';
   templateUrl: './day-forecast-card.component.html',
   styleUrl: './day-forecast-card.component.css'
 })
-export class DayForecastCardComponent {
+export class DayForecastCardComponent implements OnInit {
 
   @Input() dayForecast!: DayForecast;
 
-  date: string;
-  time: string
+  date: string = ""
+  time: string = ""
 
-  constructor() {
-    this.date = "";
-    this.time = "";
-  }
+  constructor() { }
 
   ngOnInit(): void {
     this.date = moment(this.dayForecast.time).format("dddd - DD.MM.yyyy");

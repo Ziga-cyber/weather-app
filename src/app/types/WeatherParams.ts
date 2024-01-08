@@ -6,4 +6,5 @@ export interface WeatherParams {
     daily: string[];
     timezone: string;
     forecast_days: number;
+    forecast_hours: number;
 }

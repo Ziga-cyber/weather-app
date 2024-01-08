@@ -12,11 +12,9 @@ import moment from 'moment';
 export class HoursForecastCardComponent implements OnInit {
   @Input() hourForecast!: HourForecast;
 
-  time: string
+  time: string = "";
 
-  constructor() {
-    this.time = "";
-  }
+  constructor() { }
 
   ngOnInit(): void {
     this.time = moment(this.hourForecast.time).format("dddd") + " at " + moment(this.hourForecast.time).format("HH:mm");
@@ -34,7 +32,5 @@ export class HoursForecastCardComponent implements OnInit {
     const index = Math.floor(degrees / 22.5) % 16;
     return directions[index];
   }
-
-
 
 }

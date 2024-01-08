@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { fetchWeatherApi } from 'openmeteo';
 import { WeatherParams } from '../types/WeatherParams';
-import { Weather, Images, HourForecast, DayForecast } from '../types/Weather';
+import { Weather, Images, HourForecast, ImageData, DayForecast, CurrentWeather, GraphData } from '../types/Weather';
 import { images } from "./data/images";
 import moment from 'moment';
 
@@ -9,119 +9,102 @@ import moment from 'moment';
   providedIn: 'root'
 })
 export class WeatherService {
+  images: Images = images;
 
-  images: Images;
-
-  constructor() {
-    this.images = images;
-  }
+  constructor() { }
 
   public async getCurrentWeather(params: WeatherParams): Promise<Weather> {
     const url = "https://api.open-meteo.com/v1/forecast";
-
     const responses = await fetchWeatherApi(url, params);
 
-    // Helper function to form time ranges
+    const utcOffsetSeconds = responses[0].utcOffsetSeconds();
+    const current = responses[0].current()!;
+    const hourly = responses[0].hourly()!;
+    const daily = responses[0].daily()!;
+
+    // Helper function to generate a range of numbers. This function returns an array of all dates that are between 
+    // the start and the end date based on the step. 
+    // Example: range(1, 10, 2) returns [3, 5, 7, 9]
     const range = (start: number, stop: number, step: number) =>
       Array.from({ length: (stop - start) / step }, (_, i) => start + i * step);
 
-    // Process first location.
-    const response = responses[0];
-
-    // Attributes for timezone and location
-    const utcOffsetSeconds = response.utcOffsetSeconds();
-    console.log(utcOffsetSeconds)
-
-    const current = response.current()!;
-    const time = new Date((Number(current.time()) + utcOffsetSeconds) * 1000);
-
-    const hourly = response.hourly()!;
-    const daily = response.daily()!;
-    console.log(hourly.timeEnd())
-
-    // const startHourly = moment(Number(hourly.time()) * 1000).add(utcOffsetSeconds, 'seconds');
-    // const endHourly = moment(Number(hourly.timeEnd()) * 1000).add(utcOffsetSeconds, 'seconds');
-    // const intervalHourly = moment.duration(hourly.interval(), 'seconds');
-
-    // const timeHourly = [];
-    // for (let time = startHourly.clone(); time.isBefore(endHourly); time.add(intervalHourly)) {
-    //   timeHourly.push(time.toDate());
-    // }
-    // console.log(timeHourly)
-
-    let parsed_response: any = {
+    // Process hourly and daily data
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+    const parsed_response: any = {
       hourly: {
         time: range(Number(hourly.time()), Number(hourly.timeEnd()), hourly.interval()).map(
           (t) => new Date((t + utcOffsetSeconds) * 1000)
         ),
-        temperature2m: hourly.variables(0)!.valuesArray()!,
-        precipitationProbability: hourly.variables(1)!.valuesArray()!,
-        weatherCode: hourly.variables(2)!.valuesArray()!,
-        windSpeed10m: hourly.variables(3)!.valuesArray()!,
-        windDirection10m: hourly.variables(4)!.valuesArray()!,
+        temperature2m: hourly.variables(0)!.valuesArray(),
+        precipitationProbability: hourly.variables(1)!.valuesArray(),
+        weatherCode: hourly.variables(2)!.valuesArray(),
+        windSpeed10m: hourly.variables(3)!.valuesArray(),
+        windDirection10m: hourly.variables(4)!.valuesArray(),
         weatherIcon: []
       },
-
       daily: {
         time: range(Number(daily.time()), Number(daily.timeEnd()), daily.interval()).map(
           (t) => new Date((t + utcOffsetSeconds) * 1000)
         ),
-        weatherCode: daily.variables(0)!.valuesArray()!,
-        temperature2m: daily.variables(1)!.valuesArray()!,
-        temperature2d: daily.variables(2)!.valuesArray()!,
-        precipitationProbability: daily.variables(3)!.valuesArray()!,
+        weatherCode: daily.variables(0)!.valuesArray()!.map(Math.floor),
+        temperature2m: daily.variables(1)!.valuesArray()!.map(Math.floor),
+        temperature2d: daily.variables(2)!.valuesArray()!.map(Math.floor),
+        precipitationProbability: daily.variables(3)!.valuesArray()!.map(Math.floor),
         weatherIcon: []
-
       }
-    }
+    };
 
-    console.log(parsed_response)
+    // Process weather icons. We get the weather code and assign it the correct icon url.
+    const processWeatherIcons = (sourceArray: number[], targetArray: ImageData[]) => {
+      sourceArray.forEach((element: number) => {
+        targetArray.push(this.images[JSON.stringify(element)].day);
+      });
+    };
 
-    parsed_response.hourly.weatherCode.forEach((element: number) => {
-      parsed_response.hourly.weatherIcon.push(this.images[JSON.stringify(element)].day);
-    });
+    processWeatherIcons(parsed_response.hourly.weatherCode, parsed_response.hourly.weatherIcon);
+    processWeatherIcons(parsed_response.daily.weatherCode, parsed_response.daily.weatherIcon);
 
-    parsed_response.daily.weatherCode.forEach((element: number) => {
-      parsed_response.daily.weatherIcon.push(this.images[JSON.stringify(element)].day);
-    })
-
-
+    // Generate graph date labels made out of the hours and minutes
     const graphDateLabels: string[] = [];
-
     parsed_response.hourly.time.forEach((value: Date) => {
       graphDateLabels.push(moment(value).format("HH:mm"));
-    })
+    });
 
-    const temperatureData: any = {
-      values:
-        parsed_response.hourly.temperature2m,
+    // Extract data for graphs
+    const temperatureData: GraphData = {
+      values: parsed_response.hourly.temperature2m.slice(0, 24),
+      //We take just the first 24 values
       labels: graphDateLabels
     };
 
-    const precipationChanceData: any = {
-      values:
-        parsed_response.hourly.precipitationProbability, labels: graphDateLabels
+    const precipationChanceData: GraphData = {
+      values: parsed_response.hourly.precipitationProbability.slice(0, 24),
+      //We take just the first 24 values
+      labels: graphDateLabels
     };
 
-    const windSpeedData: any = {
-      values:
-        parsed_response.hourly.windSpeed10m, labels: graphDateLabels
+    const windSpeedData: GraphData = {
+      values: parsed_response.hourly.windSpeed10m.slice(0, 24),
+      //We take just the first 24 values
+      labels: graphDateLabels
     };
 
-    let dayForecast: DayForecast[] = [];
+    // Generate day forecast
+    const dayForecast: DayForecast[] = [];
     for (let i = 0; i < parsed_response.daily.time.length; i++) {
       dayForecast.push({
         time: parsed_response.daily.time[i],
-        temperature2m: Math.floor(parsed_response.daily.temperature2m[i]),
-        temperature2d: Math.floor(parsed_response.daily.temperature2d[i]),
-        precipitationProbability: Math.floor(parsed_response.daily.precipitationProbability[i]),
+        temperature2m: parsed_response.daily.temperature2m[i],
+        temperature2d: parsed_response.daily.temperature2d[i],
+        precipitationProbability: parsed_response.daily.precipitationProbability[i],
         weatherCode: parsed_response.daily.weatherCode[i],
         weatherIcon: parsed_response.daily.weatherIcon[i],
       })
     }
 
-    let hourForecast: HourForecast[] = [];
-    for (let i = 0; i < 49; i++) {
+    // Generate hour forecast
+    const hourForecast: HourForecast[] = [];
+    for (let i = 0; i < 24; i++) {
 
       hourForecast.push({
         id: i,
@@ -135,31 +118,24 @@ export class WeatherService {
       })
     }
 
-    hourForecast = hourForecast.filter((element: HourForecast) => {
-      return moment(new Date()).isBefore(element.time);
-    });
-
-    hourForecast = hourForecast.slice(0, 24)
-
-
-    // Note: The order of weather variables in the URL query and the indices below need to match!
-    const weather: Weather = {
-      dateString: moment(time).format('DD.MM.YYYY HH:mm'),
-
-      currentWeather: {
-        time: new Date((Number(current.time()) + utcOffsetSeconds) * 1000),
-        temperature2m: Math.floor(current.variables(0)!.value()),
-        weatherIcon: this.images[JSON.stringify(current.variables(3)!.value())].day,
-      },
-
-      hourForecast: hourForecast,
-      dayForecast: dayForecast,
-      temperatureData: temperatureData,
-      precipationChanceData: precipationChanceData,
-      windSpeedData: windSpeedData
+    const currentWeather: CurrentWeather = {
+      time: new Date((Number(current.time()) + utcOffsetSeconds) * 1000),
+      temperature2m: Math.floor(current.variables(0)!.value()),
+      weatherIcon: this.images[JSON.stringify(current.variables(3)!.value())].day,
+      // We get the weather code and assign it the correct icon url.
     };
 
-    console.log(weather)
+    // Construct final weather object
+    const weather: Weather = {
+      dateString: moment(new Date()).format('DD.MM.YYYY HH:mm'),
+      currentWeather: currentWeather,
+      hourForecast,
+      dayForecast,
+      temperatureData,
+      precipationChanceData,
+      windSpeedData
+    };
+
     return weather;
   }
 }

@@ -1,4 +1,4 @@
-export interface Weather {
+export type Weather = {
     currentWeather: CurrentWeather,
     hourForecast: HourForecast[],
     dayForecast: DayForecast[],
@@ -8,18 +8,18 @@ export interface Weather {
     windSpeedData: GraphData
 }
 
-export interface GraphData {
+export type GraphData = {
     values: number[],
     labels: string[]
 }
 
-export interface CurrentWeather {
+export type CurrentWeather = {
     time: Date;
     temperature2m: number;
     weatherIcon: ImageData;
 }
 
-export interface ImageData {
+export type ImageData = {
     description: string,
     image: string
 }
@@ -31,7 +31,7 @@ export interface Images {
     };
 }
 
-export interface HourlyWeather {
+export type HourlyWeather = {
     time: Date,
     temperature2m: number[],
     precipitationProbability: number[],
@@ -42,7 +42,7 @@ export interface HourlyWeather {
     weatherIcon: Images[]
 }
 
-export interface HourForecast {
+export type HourForecast = {
     time: Date,
     temperature2m: number,
     precipitationProbability: number,
@@ -53,7 +53,7 @@ export interface HourForecast {
     id: number
 }
 
-export interface DayForecast {
+export type DayForecast = {
     time: Date
     temperature2m: number,
     precipitationProbability: number,

@@ -15,6 +15,4 @@ export class CurrentWeatherCardComponent {
 
   constructor() { }
 
-
-
 }
